@@ -105,9 +105,6 @@ export class BlueskyHandler {
 
       const postRecord = post.record as AppBskyFeedPost.Main;
 
-      let videoWidth = -1;
-      let videoHeight = -1;
-
       if (isVideo && urls[0]) {
         const filePath = `${config.DATA_PATH}/${user.did.split(':')[2]}-${key}.mp4`;
         const tempPath = `${config.DATA_PATH}/${user.did.split(':')[2]}-${key}-temp.mp4`;
@@ -119,9 +116,6 @@ export class BlueskyHandler {
 
           const probeResult = JSON.parse(execSync(`${ffprobeBin} -v quiet -print_format json -show_format -show_streams ${filePath}`) as unknown as string);
           const videoStream = probeResult.streams.find(s => s.codec_type == 'video');
-
-          videoWidth = probeResult.streams[0].width ?? -1;
-          videoHeight = probeResult.streams[0].height ?? -1;
 
           const duration = Number(videoStream?.duration ?? '0');
           if (duration > 0 && duration < 10) {
@@ -140,10 +134,6 @@ export class BlueskyHandler {
             fs.rmSync(filePath);
           }
         } else {
-          const probeResult = JSON.parse(execSync(`${ffprobeBin} -v quiet -print_format json -show_format -show_streams ${filePath}`) as unknown as string);
-
-          videoWidth = probeResult.streams[0].width ?? -1;
-          videoHeight = probeResult.streams[0].height ?? -1;
           urls[0] = `${config.URL!}/videos/${user.did.split(':')[2]}-${key}.mp4`;
         }
       }
@@ -162,8 +152,8 @@ export class BlueskyHandler {
         reposts: post.repostCount as number ?? 0,
         quotes: post.quoteCount as number ?? 0,
         createdAt: post.indexedAt as string ?? new Date().toISOString(),
-        videoWidth,
-        videoHeight,
+        videoWidth: (postRecord.embed as AppBskyEmbedVideo.Main)?.aspectRatio?.width ?? 0,
+        videoHeight: (postRecord.embed as AppBskyEmbedVideo.Main)?.aspectRatio?.height ?? 0,
         urls
       };
     } catch (e) {
