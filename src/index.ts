@@ -25,7 +25,7 @@ app.set('trust proxy', 1);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/*any/videos/:key.mp4', returnVideo);
+app.get('{/*any}/videos/:key.mp4', returnVideo);
 
 app.get('/bluesky/profile/:user/post/:post{/:index}', getPostBluesky);
 app.get('/bluesky/*path', (req: Request, res: Response) => {

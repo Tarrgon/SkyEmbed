@@ -6,5 +6,4 @@ services:
     ports:
       - "7482:7482"
     volumes:
-      - ./data:/app/data
-      - /etc/letsencrypt:/app/letsencrypt
+      - ./data:/app/dist/data

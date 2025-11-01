@@ -1,14 +1,9 @@
 import { AppBskyEmbedImages, AppBskyEmbedRecordWithMedia, AppBskyEmbedVideo, AppBskyFeedPost, AtpAgent } from '@atproto/api';
-import { config } from '../config';
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
-import fs from 'fs';
-import ffmpegBin from 'ffmpeg-static';
-import { path as ffprobeBin } from 'ffprobe-static';
+import { config } from '../config';
 import { Database } from '../Database';
-import { execSync } from 'child_process';
-
-const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
+import { loopVideoIfNeeded, wait } from '../utils';
 
 export type EmbedData = {
   type: 'image' | 'video'
@@ -106,35 +101,12 @@ export class BlueskyHandler {
       const postRecord = post.record as AppBskyFeedPost.Main;
 
       if (isVideo && urls[0]) {
-        const filePath = `${config.DATA_PATH}/${user.did.split(':')[2]}-${key}.mp4`;
-        const tempPath = `${config.DATA_PATH}/${user.did.split(':')[2]}-${key}-temp.mp4`;
+        const videoKey = `bsky-${user.did.split(':')[2]}-${key}`;
 
-        if (!fs.existsSync(filePath)) {
-          const res = await fetch(urls[0]);
-
-          fs.writeFileSync(filePath, Buffer.from(await res.arrayBuffer()));
-
-          const probeResult = JSON.parse(execSync(`${ffprobeBin} -v quiet -print_format json -show_format -show_streams ${filePath}`) as unknown as string);
-          const videoStream = probeResult.streams.find(s => s.codec_type == 'video');
-
-          const duration = Number(videoStream?.duration ?? '0');
-          if (duration > 0 && duration < 10) {
-            const loopsNeeded = Math.ceil(15 / duration);
-            execSync(`${ffmpegBin} -y -stream_loop ${loopsNeeded} -i ${filePath} -c copy ${tempPath}`);
-
-            while (!fs.existsSync(filePath) || !fs.existsSync(tempPath)) await wait(500);
-
-            fs.rmSync(filePath);
-            fs.renameSync(tempPath, filePath);
-
-            urls[0] = `${config.URL!}/videos/${user.did.split(':')[2]}-${key}.mp4`;
-
-            Database.instance.add(`${user.did.split(':')[2]}-${key}`);
-          } else {
-            fs.rmSync(filePath);
-          }
+        if (!Database.instance.has(videoKey)) {
+          if (await loopVideoIfNeeded(videoKey, urls[0])) urls[0] = `${config.BASE_URL!}/videos/${videoKey}.mp4`;
         } else {
-          urls[0] = `${config.URL!}/videos/${user.did.split(':')[2]}-${key}.mp4`;
+          urls[0] = `${config.BASE_URL!}/videos/${videoKey}.mp4`;
         }
       }
 

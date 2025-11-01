@@ -29,8 +29,12 @@ export class Database {
   }
 
   public add(key: string) {
-    if (!this.database.prepare('SELECT * FROM data WHERE id = ?').get(key))
+    if (!this.database.prepare('SELECT * FROM data WHERE key = ?').get(key))
       this.database.prepare('INSERT INTO data (key, last_accessed_millis) VALUES (?, ?)').run(key, Date.now());
+  }
+
+  public has(key: string): boolean {
+    return this.database.prepare('SELECT * FROM data WHERE key = ?').get(key) != null;
   }
 
   public delete(key: string) {
