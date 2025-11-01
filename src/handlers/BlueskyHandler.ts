@@ -1,11 +1,11 @@
 import { AppBskyEmbedImages, AppBskyEmbedRecordWithMedia, AppBskyEmbedVideo, AppBskyFeedPost, AtpAgent } from '@atproto/api';
-import { config } from './config';
+import { config } from '../config';
 import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 import fs from 'fs';
 import ffmpegBin from 'ffmpeg-static';
 import { path as ffprobeBin } from 'ffprobe-static';
-import { Database } from './Database';
+import { Database } from '../Database';
 import { execSync } from 'child_process';
 
 const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
@@ -24,6 +24,7 @@ export type EmbedData = {
   urls: string[]
   createdAt: string
 };
+
 
 export class BlueskyHandler {
   static #instance: BlueskyHandler;
@@ -71,7 +72,7 @@ export class BlueskyHandler {
     return response.data;
   }
 
-  public async extractEmbedData(name: string, key: string, index: number): Promise<EmbedData | null> {
+  public async extractEmbedData(name: string, key: string, index: number = 0): Promise<EmbedData | null> {
     try {
       const user = await this.getUser(name);
 

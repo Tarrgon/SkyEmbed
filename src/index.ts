@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import express, { Request, Response } from 'express';
-import { getPost, returnVideo } from './routes';
+import { getPostBluesky, returnVideo } from './routes';
 import fs from 'fs';
 import { config } from './config';
 import path from 'path';
@@ -25,15 +25,15 @@ app.set('trust proxy', 1);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/profile/:user/post/:post{/:index}', getPost);
-app.get('/videos/:key.mp4', returnVideo);
+app.get('/*any/videos/:key.mp4', returnVideo);
 
-app.get('/', (req: Request, res: Response) => {
-  res.redirect('https://github.com/Tarrgon/SkyEmbed');
+app.get('/bluesky/profile/:user/post/:post{/:index}', getPostBluesky);
+app.get('/bluesky/*path', (req: Request, res: Response) => {
+  res.redirect(`https://bsky.app${req.path.slice(8)}`);
 });
 
 app.get('/*path', (req: Request, res: Response) => {
-  res.redirect(`https://bsky.app${req.path}`);
+  res.redirect('https://github.com/Tarrgon/SkyEmbed');
 });
 
 // @ts-ignore

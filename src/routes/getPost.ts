@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { BlueskyHandler } from '../BlueskyHandler';
+import { BlueskyHandler } from '../handlers';
 
-export async function getPost(req: Request, res: Response) {
+export async function getPostBluesky(req: Request, res: Response) {
   const postData = await BlueskyHandler.instance.extractEmbedData(req.params.user, req.params.post, parseInt(req.params.index ?? '0'));
 
   const redirectUrl = `https://bsky.app/profile/${req.params.user}/post/${req.params.post}`;
