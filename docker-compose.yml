@@ -1,0 +1,10 @@
+services:
+  skyembed:
+    restart: always
+    build: .
+    env_file: '.env'
+    ports:
+      - "7482:7482"
+    volumes:
+      - ./data:/app/data
+      - /etc/letsencrypt:/app/letsencrypt

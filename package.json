@@ -1,0 +1,29 @@
+{
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@stylistic/eslint-plugin": "^4.2.0",
+    "@types/express": "^5.0.2",
+    "eslint": "^9.27.0",
+    "rimraf": "^6.0.1",
+    "source-map-support": "^0.5.21",
+    "tsup": "^8.5.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.32.1"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.17.7",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "npm run clean && npx tsc && npm run copyfiles",
+    "clean": "npx rimraf dist",
+    "copyfiles": "npx copyfiles -u 1 \"./src/**/*.ejs\" ./dist"
+  }
+}
