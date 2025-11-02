@@ -47,5 +47,5 @@ server.on('error', console.error);
 
 server.listen(config.PORT, '0.0.0.0');
 
-Database.instance.removeLeastAccessed();
-setInterval(Database.instance.removeLeastAccessed, 8.64e7);
+Database.instance.removeLeastAccessedVideos();
+setInterval(Database.instance.removeLeastAccessedVideos, 8.64e7);

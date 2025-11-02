@@ -27,6 +27,10 @@ export async function loopVideo(filePath: string, videoKey: string, duration: nu
 }
 
 export async function loopVideoIfNeeded(videoKey: string, url: string): Promise<boolean> {
+  const existingDuration = Database.instance.getVideoDuration(videoKey);
+
+  if (existingDuration && existingDuration >= config.LOOP_MAX_DURATION * 0.667) return false;
+
   const filePath = `${config.DATA_PATH}/${videoKey}.mp4`;
 
   const res = await fetch(url);
@@ -35,9 +39,11 @@ export async function loopVideoIfNeeded(videoKey: string, url: string): Promise<
 
   const duration = getVideoDuration(filePath);
 
+  Database.instance.addVideoDuration(videoKey, duration);
+
   if (duration > 0 && duration < config.LOOP_MAX_DURATION * 0.667) {
     await loopVideo(filePath, videoKey, duration);
-    Database.instance.add(videoKey);
+    Database.instance.addVideo(videoKey);
     return true;
   } else {
     fs.rmSync(filePath);

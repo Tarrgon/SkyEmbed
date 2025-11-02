@@ -12,5 +12,5 @@ export function returnVideo(req: Request, res: Response) {
 
   res.sendFile(p);
 
-  Database.instance.hit(key);
+  Database.instance.hitVideo(key);
 }

@@ -103,8 +103,12 @@ export class BlueskyHandler {
       if (isVideo && urls[0]) {
         const videoKey = `bsky-${user.did.split(':')[2]}-${key}`;
 
-        if (!Database.instance.has(videoKey)) {
-          if (await loopVideoIfNeeded(videoKey, urls[0])) urls[0] = `${config.BASE_URL!}/videos/${videoKey}.mp4`;
+        // Since the video key is passed into ffmpeg, ensuring it's safe is important.
+        // See https://atproto.com/specs/did
+        const TESTER_REGEX = /^bsky-[a-zA-Z0-9._:-]+-[a-zA-Z0-9]+\.mp4$/;
+
+        if (!Database.instance.hasVideo(videoKey)) {
+          if (TESTER_REGEX.test(videoKey) && await loopVideoIfNeeded(videoKey, urls[0])) urls[0] = `${config.BASE_URL!}/videos/${videoKey}.mp4`;
         } else {
           urls[0] = `${config.BASE_URL!}/videos/${videoKey}.mp4`;
         }
