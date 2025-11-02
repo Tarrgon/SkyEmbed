@@ -1,7 +1,7 @@
-import { DatabaseSync } from 'node:sqlite';
-import { config } from './config';
-import path from 'path';
 import fs from 'fs';
+import { DatabaseSync } from 'node:sqlite';
+import path from 'path';
+import { config } from './config';
 
 export class Database {
   static #instance: Database;

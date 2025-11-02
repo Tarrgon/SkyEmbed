@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
 import ffmpegBin from 'ffmpeg-static';
 import { path as ffprobeBin } from 'ffprobe-static';
-import { config } from '../config';
 import fs from 'fs';
-import { wait } from './wait';
+import { config } from '../config';
 import { Database } from '../Database';
+import { wait } from './wait';
 
 export function getVideoDuration(filePath: string): number {
   const probeResult = JSON.parse(execSync(`${ffprobeBin} -v quiet -print_format json -show_format -show_streams ${filePath}`) as unknown as string);

@@ -1,12 +1,12 @@
-import 'source-map-support/register';
 import express, { Request, Response } from 'express';
-import { getPostBluesky, returnVideo } from './routes';
 import fs from 'fs';
-import { config } from './config';
-import path from 'path';
 import http from 'http';
 import https from 'https';
+import path from 'path';
+import 'source-map-support/register';
+import { config } from './config';
 import { Database } from './Database';
+import { getPostBluesky, returnVideo } from './routes';
 
 fs.mkdirSync(config.DATA_PATH, {
   recursive: true
