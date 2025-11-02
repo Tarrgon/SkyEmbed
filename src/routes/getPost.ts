@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { BlueskyHandler } from '../handlers';
 
 export async function getPostBluesky(req: Request, res: Response) {
-  const postData = await BlueskyHandler.instance.extractEmbedData(req.params.user, req.params.post, parseInt(req.params.index ?? '0'));
+  const forceNoLoop = (req.query['no-loop'] ?? req.query.nl) == 'true';
+  const postData = await BlueskyHandler.instance.extractEmbedData(req.params.user, req.params.post, parseInt(req.params.index ?? '0'), forceNoLoop);
 
   const redirectUrl = `https://bsky.app/profile/${req.params.user}/post/${req.params.post}`;
 

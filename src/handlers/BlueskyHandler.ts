@@ -67,7 +67,7 @@ export class BlueskyHandler {
     return response.data;
   }
 
-  public async extractEmbedData(name: string, key: string, index: number = 0): Promise<EmbedData | null> {
+  public async extractEmbedData(name: string, key: string, index = 0, forceNoLoop = false): Promise<EmbedData | null> {
     try {
       const user = await this.getUser(name);
 
@@ -100,12 +100,12 @@ export class BlueskyHandler {
 
       const postRecord = post.record as AppBskyFeedPost.Main;
 
-      if (isVideo && urls[0]) {
+      if (isVideo && urls[0] && !forceNoLoop) {
         const videoKey = `bsky-${user.did.split(':')[2]}-${key}`;
 
         // Since the video key is passed into ffmpeg, ensuring it's safe is important.
         // See https://atproto.com/specs/did
-        const TESTER_REGEX = /^bsky-[a-zA-Z0-9._:-]+-[a-zA-Z0-9]+\.mp4$/;
+        const TESTER_REGEX = /^bsky-[a-zA-Z0-9._:-]+-[a-zA-Z0-9]+$/;
 
         if (!Database.instance.hasVideo(videoKey)) {
           if (TESTER_REGEX.test(videoKey) && await loopVideoIfNeeded(videoKey, urls[0])) urls[0] = `${config.BASE_URL!}/videos/${videoKey}.mp4`;
