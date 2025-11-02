@@ -17,7 +17,7 @@ export async function loopVideo(filePath: string, videoKey: string, duration: nu
   const tempPath = `${config.DATA_PATH}/${videoKey}-temp.mp4`;
 
   const loopsNeeded = Math.ceil(config.LOOP_MAX_DURATION / duration);
-  execSync(`${ffmpegBin} -y -stream_loop ${loopsNeeded} -i ${filePath} -c copy ${tempPath}`);
+  execSync(`${ffmpegBin} -y -stream_loop ${loopsNeeded} -i ${filePath} -c copy ${tempPath}`, { stdio: 'ignore' });
 
   while (!fs.existsSync(filePath) || !fs.existsSync(tempPath)) await wait(100);
 
