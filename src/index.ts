@@ -6,7 +6,7 @@ import path from 'path';
 import 'source-map-support/register';
 import { config } from './config';
 import { Database } from './Database';
-import { getPostBluesky, returnVideo } from './routes';
+import { getPostBluesky, returnOEmbed, returnVideo } from './routes';
 
 fs.mkdirSync(config.DATA_PATH, {
   recursive: true
@@ -26,6 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.get('{/*any}/videos/:key.mp4', returnVideo);
+app.get('{/*any}/oembed', returnOEmbed);
 
 app.get('/bluesky/profile/:user/post/:post{/:index}', getPostBluesky);
 app.get('/bluesky/*path', (req: Request, res: Response) => {

@@ -27,6 +27,7 @@
   <meta property="og:video:height" content="<%- post.videoHeight %>" />
   <meta property="twitter:player:width" content="<%- post.videoWidth %>" />
   <meta property="twitter:player:height" content="<%- post.videoHeight %>" />
+  <link rel="alternate" type="application/json+oembed" href="<%- config.BASE_URL %>/oembed?replies=<%- post.replies %>&reposts=<%- post.reposts + post.quotes %>&likes=<%- post.likes %>&description=<%- encodeURIComponent(post.content) %>">
   <% } else { %>
   <meta name="twitter:card" content="summary_large_image" />
   <meta property="twitter:image" content="<%- post.urls[0] %>" />
